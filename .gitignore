@@ -19,3 +19,6 @@ go.work
 
 # VS Code files
 .vscode
+
+# Database files
+.database
