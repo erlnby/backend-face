@@ -2,6 +2,9 @@ package controller
 
 import (
 	"backend-face/internal/entity"
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -26,12 +29,30 @@ func NewUserController(useCase UserUseCase) UserController {
 }
 
 func (controller UserController) RecognizeUser(w http.ResponseWriter, r *http.Request) {
-	/*
-		Нужно проверсти преобразование r -> json (по структуре userGetRequest) -> entity.User (неполностью заполненная).
-		useCase вернет также entity.User. Ее нужно преобразовать в userResponse, потом в json и отдать в w. На всех
-		преобразованиях предусмостреть HTTP-ошибки.
-	*/
-	controller.useCase.RecognizeUser(entity.User{})
+	if method := r.Method; method != "POST" {
+		return
+	}
+	var b userGetRequest
+	err := json.NewDecoder(r.Body).Decode(&b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	neededUser := controller.useCase.RecognizeUser(entity.User{Encoding: b.Encoding})
+	if neededUser.ID == "" {
+		http.NotFound(w, r)
+		return
+	}
+	result, err := json.Marshal(userResponse{ID: neededUser.ID})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, err = fmt.Fprint(w, string(result))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 }
 
 func (controller UserController) RegisterHandlers() {
