@@ -21,20 +21,24 @@ func NewUserUseCase(repository UserRepository) UserUseCase {
 
 func (useCase UserUseCase) RecognizeUser(user entity.User) entity.User {
 	users := useCase.repository.GetAll()
+
 	var (
-		sum        float64 = 0
 		minScore   float64 = math.MaxFloat64
 		neededUser entity.User
 	)
-	for i := 0; i < len(users); i++ {
+
+	for _, userDB := range users {
+		sum := 0.0
+
 		for j := 0; j < 256; j++ {
-			sum += math.Pow(users[i].Encoding[j]-user.Encoding[j], 2)
+			sum += math.Pow(userDB.Encoding[j]-user.Encoding[j], 2)
 		}
+
 		if res := math.Sqrt(sum); res <= Tolerance && res < minScore {
 			minScore = res
-			neededUser = users[i]
+			neededUser = userDB
 		}
-		sum = 0
 	}
+
 	return neededUser
 }

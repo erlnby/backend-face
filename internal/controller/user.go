@@ -28,31 +28,36 @@ func NewUserController(useCase UserUseCase) UserController {
 	return UserController{useCase}
 }
 
-func (controller UserController) RecognizeUser(w http.ResponseWriter, r *http.Request) {
-	if method := r.Method; method != "POST" {
+func (controller UserController) RecognizeUser(writer http.ResponseWriter, request *http.Request) {
+	if method := request.Method; method != "POST" {
 		return
 	}
-	var b userGetRequest
-	err := json.NewDecoder(r.Body).Decode(&b)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+
+	var userGet userGetRequest
+
+	if err := json.NewDecoder(request.Body).Decode(&userGet); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	neededUser := controller.useCase.RecognizeUser(entity.User{Encoding: b.Encoding})
+
+	neededUser := controller.useCase.RecognizeUser(entity.User{Encoding: userGet.Encoding})
+
 	if neededUser.ID == "" {
-		http.NotFound(w, r)
+		http.NotFound(writer, request)
 		return
 	}
+
 	result, err := json.Marshal(userResponse{ID: neededUser.ID})
 	if err != nil {
 		log.Fatalln(err)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	_, err = fmt.Fprint(w, string(result))
+
+	writer.Header().Set("Content-Type", "application/json")
+
+	_, err = fmt.Fprint(writer, string(result))
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 }
 
 func (controller UserController) RegisterHandlers() {
