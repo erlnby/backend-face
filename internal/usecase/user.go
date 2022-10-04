@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"backend-face/internal/entity"
+	"backend-face/internal/utils"
 	"math"
 )
 
@@ -22,20 +23,13 @@ func NewUserUseCase(repository UserRepository) UserUseCase {
 func (useCase UserUseCase) RecognizeUser(user entity.User) entity.User {
 	users := useCase.repository.GetAll()
 
-	var (
-		minScore   float64 = math.MaxFloat64
-		neededUser entity.User
-	)
+	minScore := math.MaxFloat64
+	var neededUser entity.User
 
 	for _, userDB := range users {
-		sum := 0.0
-
-		for j := 0; j < 256; j++ {
-			sum += math.Pow(userDB.Encoding[j]-user.Encoding[j], 2)
-		}
-
-		if res := math.Sqrt(sum); res <= Tolerance && res < minScore {
-			minScore = res
+		distance, _ := utils.GetEuclideanDistance(userDB.Encoding[:], user.Encoding[:])
+		if distance <= Tolerance && distance < minScore {
+			minScore = distance
 			neededUser = userDB
 		}
 	}
