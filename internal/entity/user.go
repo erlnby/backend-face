@@ -1,6 +1,8 @@
 package entity
 
+type EncodingType [256]float64
+
 type User struct {
 	ID       string       `json:"id" bson:"_id"`
-	Encoding [256]float64 `json:"encoding" bson:"encoding"`
+	Encoding EncodingType `json:"encoding" bson:"encoding"`
 }

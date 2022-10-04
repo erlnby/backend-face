@@ -13,7 +13,7 @@ type UserUseCase interface {
 }
 
 type userGetRequest struct {
-	Encoding [256]float64 `json:"encoding"`
+	Encoding entity.EncodingType `json:"encoding"`
 }
 
 type userResponse struct {
