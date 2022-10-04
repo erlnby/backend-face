@@ -9,7 +9,7 @@ import (
 )
 
 type UserUseCase interface {
-	RecognizeUser(user entity.User) entity.User
+	RecognizeUser(user entity.User) *entity.User
 }
 
 type userGetRequest struct {
@@ -34,27 +34,25 @@ func (controller UserController) RecognizeUser(writer http.ResponseWriter, reque
 	}
 
 	var userGet userGetRequest
-
 	if err := json.NewDecoder(request.Body).Decode(&userGet); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	neededUser := controller.useCase.RecognizeUser(entity.User{Encoding: userGet.Encoding})
-
-	if neededUser.ID == "" {
+	if neededUser == nil {
 		http.NotFound(writer, request)
 		return
 	}
 
-	result, err := json.Marshal(userResponse{ID: neededUser.ID})
+	response, err := json.Marshal(userResponse{ID: neededUser.ID})
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
 
-	_, err = fmt.Fprint(writer, string(result))
+	_, err = fmt.Fprint(writer, string(response))
 	if err != nil {
 		log.Fatalln(err)
 	}

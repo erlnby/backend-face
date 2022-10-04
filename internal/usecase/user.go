@@ -20,17 +20,17 @@ func NewUserUseCase(repository UserRepository) UserUseCase {
 	return UserUseCase{repository}
 }
 
-func (useCase UserUseCase) RecognizeUser(user entity.User) entity.User {
+func (useCase UserUseCase) RecognizeUser(user entity.User) *entity.User {
 	users := useCase.repository.GetAll()
 
+	var neededUser *entity.User
 	minScore := math.MaxFloat64
-	var neededUser entity.User
 
 	for _, userDB := range users {
 		distance, _ := utils.GetEuclideanDistance(userDB.Encoding[:], user.Encoding[:])
 		if distance <= Tolerance && distance < minScore {
 			minScore = distance
-			neededUser = userDB
+			neededUser = &userDB
 		}
 	}
 
