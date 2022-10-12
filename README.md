@@ -50,3 +50,27 @@ To reverse run migrations:
 migrate -path "dir with migration files" -database "database URL" down
 ```
 
+### Makefile commands
+
+To use commands stated in the Makefile run the command below (without brackets):
+
+```shell
+make <make command name>
+```
+
+Here is a list of Makefile commands you are probably going to use during development.:
+
+* `upload`
+
+  > Build the docker image of the app corresponding to the current state of the files and push it into
+  the DockerHub.
+  Make sure that you are listed as a contributor in the repository on the DockerHub before trying to push.
+
+* `up`
+
+  > Launch app in docker containers using .env.docker file to set the environment.
+
+* `down`
+
+  > Stop docker containers
+  
