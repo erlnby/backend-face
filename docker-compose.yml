@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    image: molel/backend-face:latest
     container_name: app
     restart: on-failure
     ports:
@@ -13,7 +13,7 @@ services:
       - app_network
 
   db:
-    image: mongo
+    image: mongo:latest
     container_name: db
     restart: on-failure
     ports:
@@ -21,9 +21,9 @@ services:
     volumes:
       - ./.database:/data/db
     environment:
-      - MONGO_INITDB_DATABASE=recognition
-      - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     networks:
       - app_network
 
