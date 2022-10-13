@@ -22,3 +22,6 @@ go.work
 
 # Database files
 .database
+
+#Env files
+.env

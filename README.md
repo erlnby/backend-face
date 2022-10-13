@@ -22,6 +22,14 @@ docker-compose build
 docker-compose up
 ```
 
+### Setting up environment variables
+
+To use example environment variables do:
+
+```shell
+cp .env.example .env
+```
+
 ### Migrations
 
 Migrations are implemented using [golang-migrate](https://github.com/golang-migrate/migrate) utility.
