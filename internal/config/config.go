@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type Config struct {
 	HttpPort               string
@@ -11,8 +14,10 @@ type Config struct {
 
 func NewConfig() Config {
 	return Config{
-		HttpPort:               os.Getenv("HTTP_PORT"),
-		MongodbURL:             os.Getenv("MONGODB_URL"),
+		HttpPort: os.Getenv("HTTP_PORT"),
+		MongodbURL: fmt.Sprintf("mongodb://%s:%s@db:27017",
+			os.Getenv("MONGO_USER"),
+			os.Getenv("MONGO_PASSWORD")),
 		MongodbDatabaseName:    os.Getenv("MONGODB_DATABASE_NAME"),
 		MongodbUsersCollection: os.Getenv("MONGODB_USERS_COLLECTION"),
 	}
