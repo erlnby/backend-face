@@ -11,6 +11,8 @@ services:
       - db
     networks:
       - app_network
+    env_file:
+      - .env
 
   db:
     image: mongo:latest

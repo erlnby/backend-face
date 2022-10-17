@@ -1,4 +1,4 @@
-FROM golang:1.19.1-alpine
+FROM golang:1.19.1-alpine AS build
 
 WORKDIR /app
 
@@ -8,11 +8,10 @@ RUN go mod download
 
 COPY ./ ./
 
-RUN go build -o ./app ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/app ./cmd/main.go
 
-EXPOSE 80
+FROM scratch AS run
 
-RUN addgroup -S noroot && adduser -S noroot -G noroot
-USER noroot:noroot
+COPY --from=build /app/app /app
 
-CMD [ "./app" ]
+ENTRYPOINT [ "/app" ]
