@@ -3,7 +3,7 @@ upload image:
 	docker push molel/backend-face:latest
 
 up:
-	docker-compose --env-file .env up
+	docker-compose up
 
 down:
 	docker-compose down
