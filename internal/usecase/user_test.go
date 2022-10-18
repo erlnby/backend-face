@@ -3,9 +3,11 @@ package usecase_test
 import (
 	"backend-face/internal/entity"
 	"backend-face/internal/usecase"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"math"
+	"math/rand"
 	"testing"
 )
 
@@ -66,4 +68,28 @@ func TestUserUseCase_RecognizeUser(t *testing.T) {
 
 		assert.Equal(t, recognizedUser.ID, "2")
 	})
+}
+
+func BenchmarkUserUseCase_RecognizeUser(b *testing.B) {
+	const usersCount = 1000
+
+	user := entity.User{}
+	users := make([]entity.User, usersCount)
+
+	for userID := 0; userID < usersCount; userID++ {
+		var encoding entity.EncodingType
+		for i := 0; i < len(encoding); i++ {
+			encoding[i] = rand.NormFloat64()
+		}
+		users = append(users, entity.User{ID: fmt.Sprint(userID), Encoding: encoding})
+	}
+
+	repositoryMock := UserRepositoryMock{}
+	repositoryMock.On("GetAll").Return(users)
+	useCase := usecase.NewUserUseCase(&repositoryMock)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		useCase.RecognizeUser(user)
+	}
 }
