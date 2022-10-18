@@ -27,9 +27,9 @@ func TestUserUseCase_RecognizeUser(t *testing.T) {
 		repositoryMock := UserRepositoryMock{}
 		repositoryMock.On("GetAll").Return(users)
 		useCase := usecase.NewUserUseCase(&repositoryMock)
-		recognizedUser := useCase.RecognizeUser(testUser)
+		_, err := useCase.RecognizeUser(testUser)
 
-		assert.Nil(t, recognizedUser)
+		assert.NotNil(t, err)
 	})
 
 	t.Run("User can't be recognized if a minimum score is higher than tolerance", func(t *testing.T) {
@@ -45,9 +45,9 @@ func TestUserUseCase_RecognizeUser(t *testing.T) {
 		repositoryMock := UserRepositoryMock{}
 		repositoryMock.On("GetAll").Return(users)
 		useCase := usecase.NewUserUseCase(&repositoryMock)
-		recognizedUser := useCase.RecognizeUser(testUser)
+		_, err := useCase.RecognizeUser(testUser)
 
-		assert.Nil(t, recognizedUser)
+		assert.NotNil(t, err)
 	})
 
 	t.Run("User must be recognized with a best match", func(t *testing.T) {
@@ -64,8 +64,7 @@ func TestUserUseCase_RecognizeUser(t *testing.T) {
 		repositoryMock := UserRepositoryMock{}
 		repositoryMock.On("GetAll").Return(users)
 		useCase := usecase.NewUserUseCase(&repositoryMock)
-		recognizedUser := useCase.RecognizeUser(testUser)
-
+		recognizedUser, _ := useCase.RecognizeUser(testUser)
 		assert.Equal(t, recognizedUser.ID, "2")
 	})
 }
@@ -90,6 +89,9 @@ func BenchmarkUserUseCase_RecognizeUser(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		useCase.RecognizeUser(user)
+		_, err := useCase.RecognizeUser(user)
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }
