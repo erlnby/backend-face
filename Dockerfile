@@ -13,5 +13,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/app ./cmd/ma
 FROM scratch AS run
 
 COPY --from=build /app/app /app
+COPY --from=build /app/migrations /migrations
 
 ENTRYPOINT [ "/app" ]

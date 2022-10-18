@@ -7,20 +7,24 @@ import (
 	"backend-face/internal/usecase"
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func Run(cfg config.Config) {
 	ctx := context.TODO()
-	clientOptions := options.Client().ApplyURI(cfg.MongodbURL)
-	client, err := mongo.Connect(ctx, clientOptions)
-
+	client, err := mongo.NewClient(options.Client().ApplyURI(cfg.MongodbURL))
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	if err = client.Connect(ctx); err != nil {
+		log.Fatal(err)
+	}
+
 	if err := client.Ping(ctx, nil); err != nil {
 		log.Fatalln(err)
 	}

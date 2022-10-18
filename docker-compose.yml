@@ -9,8 +9,6 @@ services:
       - "8080:80"
     depends_on:
       - db
-    networks:
-      - app_network
     env_file:
       - .env
 
@@ -26,9 +24,16 @@ services:
       - MONGO_INITDB_DATABASE=${MONGODB_DATABASE_NAME}
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
-    networks:
-      - app_network
 
-networks:
-  app_network:
-    driver: bridge
+
+  integration:
+    build:
+      context: .
+      dockerfile: integration-test/Dockerfile
+    container_name: integration
+    image: integration
+    env_file:
+      - .env
+    depends_on:
+      - app
+
