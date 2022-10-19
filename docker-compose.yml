@@ -1,18 +1,22 @@
 version: '3.8'
 
 services:
-  app:
+  backend-face-service:
     image: molel/backend-face:latest
     container_name: app
     restart: on-failure
     ports:
       - "8080:80"
     depends_on:
-      - db
-    env_file:
-      - .env
+      - mongodb-service
+    environment:
+      - HTTP_PORT=${HTTP_PORT}
+      - MONGODB_DATABASE_NAME=${MONGODB_DATABASE_NAME}
+      - MONGODB_USERS_COLLECTION=${MONGODB_USERS_COLLECTION}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
 
-  db:
+  mongodb-service:
     image: mongo:latest
     container_name: db
     restart: on-failure
@@ -25,7 +29,6 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
 
-
   integration:
     build:
       context: .
@@ -35,5 +38,5 @@ services:
     env_file:
       - .env
     depends_on:
-      - app
+      - backend-face-service
 

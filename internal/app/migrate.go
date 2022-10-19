@@ -19,7 +19,10 @@ const (
 
 func init() {
 
-	databaseURL := fmt.Sprintf(os.Getenv("MONGODB_URL"))
+	databaseURL := fmt.Sprintf("mongodb://%s:%s@mongodb-service:27017/%s?authSource=admin",
+		os.Getenv("MONGO_USER"),
+		os.Getenv("MONGO_PASSWORD"),
+		os.Getenv("MONGODB_DATABASE_NAME"))
 
 	var (
 		attempts = _defaultAttempts

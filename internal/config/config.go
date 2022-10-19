@@ -15,7 +15,7 @@ type Config struct {
 func NewConfig() Config {
 	return Config{
 		HttpPort: os.Getenv("HTTP_PORT"),
-		MongodbURL: fmt.Sprintf("mongodb://%s:%s@db:27017",
+		MongodbURL: fmt.Sprintf("mongodb://%s:%s@mongodb-service:27017",
 			os.Getenv("MONGO_USER"),
 			os.Getenv("MONGO_PASSWORD")),
 		MongodbDatabaseName:    os.Getenv("MONGODB_DATABASE_NAME"),

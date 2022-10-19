@@ -3,7 +3,7 @@ upload-image:
 	docker push molel/backend-face:latest
 
 up:
-	docker-compose up app
+	docker-compose up backend-face-service
 
 down:
 	docker-compose down

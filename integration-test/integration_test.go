@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,7 +17,7 @@ import (
 )
 
 const (
-	serviceURL = "http://app:80/recognize"
+	serviceURL = "http://backend-face-service:80/recognize"
 )
 
 type dataType [256]float64
@@ -106,7 +107,10 @@ func generateData(min, max float64) (data dataType) {
 
 func connectToDatabase() (collection *mongo.Collection) {
 	ctx := context.TODO()
-	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGODB_URL")))
+	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@mongodb-service:27017/%s?authSource=admin",
+		os.Getenv("MONGO_USER"),
+		os.Getenv("MONGO_PASSWORD"),
+		os.Getenv("MONGODB_DATABASE_NAME"))))
 	if err != nil {
 		log.Fatalln(err)
 	}
