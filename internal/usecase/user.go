@@ -21,11 +21,10 @@ func NewUserUseCase(repository UserRepository) UserUseCase {
 	return UserUseCase{repository}
 }
 
-func (useCase UserUseCase) RecognizeUser(user entity.User) (entity.User, error) {
+func (useCase UserUseCase) RecognizeUser(user entity.User) (neededUser entity.User, err error) {
 	users := useCase.repository.GetAll()
 
-	var neededUser entity.User
-	err := errors.New("User not found")
+	err = errors.New("user not found")
 	minScore := math.MaxFloat64
 
 	for _, userDB := range users {

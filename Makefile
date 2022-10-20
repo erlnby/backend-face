@@ -9,5 +9,5 @@ down:
 	docker-compose down
 
 migration-test:
-	docker-compose up --abort-on-container-exit integration
+	docker-compose up --abort-on-container-exit
 
