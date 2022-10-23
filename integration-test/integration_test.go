@@ -43,15 +43,15 @@ func TestRecognize(t *testing.T) {
 	coll := connectToDatabase()
 	ctx := context.TODO()
 	docs := []interface{}{
-		bson.D{{"encoding", generateData(1, 1)}},
-		bson.D{{"encoding", generateData(2, 3)}},
+		bson.D{{Key: "encoding", Value: generateData(1, 1)}},
+		bson.D{{Key: "encoding", Value: generateData(2, 3)}},
 	}
 	result, _ := coll.InsertMany(ctx, docs)
 	listIds := result.InsertedIDs
 
 	defer func() {
 		for _, key := range listIds {
-			_, err := coll.DeleteOne(ctx, bson.D{{"_id", key}})
+			_, err := coll.DeleteOne(ctx, bson.D{{Key: "_id", Value: key}})
 			if err != nil {
 				log.Fatalln(err)
 			}
