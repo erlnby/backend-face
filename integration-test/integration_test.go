@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	serviceURL = "http://backend-face-service:80/recognize"
+	serviceURL = "http://backend-face-service-dev:80/recognize"
 )
 
 type dataType [256]float64
